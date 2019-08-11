@@ -17,7 +17,7 @@ All text above, and the splash screen below must be included in any redistributi
 *********************************************************************/
 
 //#include <Wire.h>
-#if defined(ESP8266)
+#if (defined(ESP8266) || defined(ESP32))
 #include <pgmspace.h>
 #else
 #include <avr/pgmspace.h>
@@ -176,7 +176,7 @@ void Adafruit_PCD8544::begin(uint8_t contrast, uint8_t bias) {
   if (isHardwareSPI()) {
     // Setup hardware SPI.
     SPI.begin();
-#ifdef ESP8266
+#if (defined(ESP8266) || defined(ESP32))
     // Datasheet says 4 MHz is max SPI clock speed
     SPI.setFrequency(4000000);
 #else
@@ -192,7 +192,7 @@ void Adafruit_PCD8544::begin(uint8_t contrast, uint8_t bias) {
     pinMode(_din, OUTPUT);
     pinMode(_sclk, OUTPUT);
 
-#ifndef ESP8266
+#if !(defined(ESP8266) || defined(ESP32))
     // Set software SPI ports and masks.
     clkport     = portOutputRegister(digitalPinToPort(_sclk));
     clkpinmask  = digitalPinToBitMask(_sclk);
@@ -253,7 +253,7 @@ inline void Adafruit_PCD8544::spiWrite(uint8_t d) {
     SPI.transfer(d);
   }
   else {
-#ifdef ESP8266
+#if (defined(ESP8266) || defined(ESP32))
     // Software SPI write with bit banging.
     for(uint8_t bit = 0x80; bit; bit >>= 1) {
       digitalWrite(_sclk, LOW);
